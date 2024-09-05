@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.PaymentRequest;
 import com.example.backend.service.PaymentService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
