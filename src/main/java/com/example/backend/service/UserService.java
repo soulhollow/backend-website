@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 
+import com.example.backend.config.JwtTokenUtil;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
@@ -20,6 +21,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder; // Zur Verschlüsselung der Passwörter
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
     public User registerUser(UserDTO userDTO) {
         // Benutzer mit verschlüsseltem Passwort registrieren
         User user = new User();
@@ -42,15 +45,18 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+
+
     public String authenticateUser(LoginRequest loginRequest) {
         Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                // Hier kannst du JWT-Token generieren und zurückgeben
-                return "JWT-TOKEN"; // Beispiel, implementiere den JWT-Token
+                // Generate and return the JWT token
+                return jwtTokenUtil.generateToken(user);
             }
         }
-        return null; // Ungültige Anmeldedaten
+        return null; // Invalid credentials
     }
+
 }
