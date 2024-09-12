@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -30,6 +33,11 @@ public class AuthController {
         if (token == null) {
             return ResponseEntity.status(401).body("Ungültige Anmeldedaten");
         }
-        return ResponseEntity.ok(token);
+
+        // Token in JSON-Format zurückgeben
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+
+        return ResponseEntity.ok(response);
     }
 }
