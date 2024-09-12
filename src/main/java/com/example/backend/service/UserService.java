@@ -55,6 +55,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
 
     public String authenticateUser(LoginRequest loginRequest) {

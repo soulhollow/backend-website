@@ -2,6 +2,7 @@ package com.example.backend.config;
 import com.example.backend.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,11 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private final String SECRET_KEY = "b367df33022d750d471deda3b5ee188a2db358435875f5f0f7451e60072b625a"; // Use a stronger secret key in production
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpirationMs;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

@@ -32,6 +32,9 @@ public class OrderService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -41,6 +44,8 @@ public class OrderService {
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
+
+
 
     @Transactional
     public Order createOrder(OrderDTO orderDTO) {
@@ -65,6 +70,14 @@ public class OrderService {
         }
 
         return savedOrder;
+    }
+    @Transactional
+    public List<Order> getOrdersByUserId(Long userId) {
+        User user = userService.getUserById(userId);  // Hole den Nutzer mit der ID
+        if (user != null) {
+            return orderRepository.findByUser(user);  // Bestellungen des Nutzers abrufen
+        }
+        return List.of(); // Leere Liste zurückgeben, wenn der Nutzer nicht existiert
     }
 
     @Transactional
