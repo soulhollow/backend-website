@@ -6,6 +6,7 @@ import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +46,16 @@ public class UserService {
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Transactional
+    public User getUserByUsername(String username) {
+        // Hole den Benutzer basierend auf dem Benutzernamen
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        // Überprüfen, ob der Benutzer existiert, andernfalls null zurückgeben oder Exception werfen
+        // Du könntest hier auch eine benutzerdefinierte Exception werfen, falls gewünscht
+        return userOptional.orElse(null);
     }
 
     public boolean existsByUsername(String username) {

@@ -6,15 +6,20 @@ import com.example.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.backend.config.JwtTokenUtil;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping
     public List<Order> getAllOrders() {
@@ -28,9 +33,17 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId) {
-        List<Order> orders = orderService.getOrdersByUserId(userId);
+    @GetMapping("/user/orders")
+    public ResponseEntity<List<Order>> getOrdersByToken(@RequestHeader("Authorization") String token) {
+        // Extrahiere den JWT-Token (entferne das "Bearer" Prefix)
+        String jwtToken = token.substring(7);
+
+        // Hole den Benutzernamen aus dem Token
+        String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+
+        // Bestellungen basierend auf dem Benutzernamen abrufen
+        List<Order> orders = orderService.getOrdersByUsername(username);
+
         if (orders.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

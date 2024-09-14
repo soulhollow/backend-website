@@ -89,6 +89,16 @@ public class OrderService {
     }
 
     @Transactional
+    public List<Order> getOrdersByUsername(String username) {
+        User user = userService.getUserByUsername(username);  // Hole den Nutzer anhand des Benutzernamens
+        if (user != null) {
+            return orderRepository.findByUser(user);  // Bestellungen des Nutzers abrufen
+        }
+        return List.of(); // Leere Liste zurückgeben, wenn der Nutzer nicht existiert
+    }
+
+
+    @Transactional
     public boolean deleteOrder(Long id) {
         return orderRepository.findById(id).map(order -> {
             orderRepository.delete(order);

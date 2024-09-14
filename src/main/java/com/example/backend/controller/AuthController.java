@@ -49,10 +49,6 @@ public class AuthController {
         if (token == null) {
             return ResponseEntity.status(401).body("Ungültige Anmeldedaten");
         }
-
-
-
-
         // Token in JSON-Format zurückgeben
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
