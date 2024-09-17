@@ -33,25 +33,6 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/user/orders")
-    public ResponseEntity<List<Order>> getOrdersByToken(@RequestHeader("Authorization") String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid Authorization header");
-        }
-
-        String token = authorizationHeader.substring(7); // Entfernt das "Bearer " Präfix
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        System.out.println("Username: " + username);
-
-        List<Order> orders = orderService.getOrdersByUsername(username);
-
-        if (orders.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        System.out.println("Bestellungen: " + orders);
-        return ResponseEntity.ok(orders);
-    }
-
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
