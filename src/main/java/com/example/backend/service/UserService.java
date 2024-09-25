@@ -1,13 +1,11 @@
 package com.example.backend.service;
 
-
 import com.example.backend.config.JwtTokenUtil;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,14 +17,16 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // Zur Verschlüsselung der Passwörter
+    private final JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder; // Zur Verschlüsselung der Passwörter
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
     public User registerUser(UserDTO userDTO) {
         // Benutzer mit verschlüsseltem Passwort registrieren
         User user = new User();
@@ -71,7 +71,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-
     public String authenticateUser(LoginRequest loginRequest) {
         Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
         if (userOpt.isPresent()) {
@@ -83,5 +82,4 @@ public class UserService {
         }
         return null; // Invalid credentials
     }
-
 }
